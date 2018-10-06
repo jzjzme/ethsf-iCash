@@ -1,0 +1,23 @@
+{
+  "name": "ethsf-iCash",
+  "version": "1.0.0",
+  "description": "# Digital Credit Card for Underserved/Undocumented People",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/icash-io/ethsf-iCash.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/icash-io/ethsf-iCash/issues"
+  },
+  "homepage": "https://github.com/icash-io/ethsf-iCash#readme",
+  "devDependencies": {
+    "web3": "^1.0.0-beta.36"
+  }
+}
