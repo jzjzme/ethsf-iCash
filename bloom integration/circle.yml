@@ -1,0 +1,81 @@
+version: 2
+
+jobs:
+  install_dependencies:
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - checkout
+
+      - run:
+          name: Huh
+          command: echo "What"
+
+      - restore_cache:
+          key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+
+      - run: 
+          name: Check yarn.lock md5 first
+          command: md5sum yarn.lock
+
+      - run:
+          name: Yarn install
+          command: yarn install --frozen-lockfile && echo "Yarn completed successfully"
+
+      - run: 
+          name: Check yarn.lock md5 second
+          command: md5sum yarn.lock
+
+
+      - save_cache:
+          key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+
+  test:
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+
+      - run:
+          name: Copy truffle config
+          command: cp truffle.js.example truffle.js && ls
+
+      - run:
+          name: Test suite
+          command: bin/test
+
+  verify_typings:
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+
+      - run:
+          name: Copy truffle config
+          command: cp truffle.js.example truffle.js && ls
+
+      - run:
+          name: Check that typings are in sync
+          command: bin/compile-typings && git diff --exit-code
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - install_dependencies
+
+      - test:
+          requires:
+            - install_dependencies
+
+      - verify_typings:
+          requires:
+            - install_dependencies
